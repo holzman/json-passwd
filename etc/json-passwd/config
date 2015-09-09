@@ -1,0 +1,9 @@
+{
+    "groupFile": "/var/db/group.db",
+    "groupUrl": "http://cms-vulcan-git.fnal.gov/group/w_cms",
+    "logFile": "/var/log/json-passwd.log",
+    "passwdFile": "/var/db/passwd.db",
+    "passwdUrl": "http://cms-vulcan-git.fnal.gov/password/w_cms",
+    "makeFile": "/etc/json-passwd/Makefile",
+    "workDir": "/root/json-passwd"
+}
