@@ -1,6 +1,6 @@
 Name:           json-passwd
 Group:          System Environment/Libraries
-Version:        1.0.0
+Version:        1.0.1
 Release:        0%{?dist}
 Summary:        Manage passwd and group database files from json URLs
 
@@ -50,15 +50,27 @@ done
 # nothing to clean up as there is no build process
 
 %post
-mkdir -p /root/json-passwd
+mkdir -p /var/lib/json-passwd
 
 %files
 %defattr(-,root,root)
 %config(noreplace) /etc/json-passwd/config
 /etc/json-passwd/Makefile
 /usr/sbin/*
+/usr/share/check-mk-agent/local/*
 /usr/share/man/man8/*
 
 %changelog
+* Thu Sep 17 2015 Tim Skirvin <tskirvin@fnal.gov>       1.0.1-0.el6
+- json-fetchgroupdb - logs to syslog, logs successes overtly
+- json-fetchpasswddb - logs to syslog, logs successes overtly
+- /usr/share/check-mk-agent/local/nss_db_group - confirms that we have 
+  group entries if group.db is configured
+- /usr/share/check-mk-agent/local/nss_db_passwd - confirms that we have 
+  passwd entries if passwd.db is configured
+- /usr/share/check-mk-agent/local/confirm_json-fetch{group|passwd}db - 
+  make sure the parent scripts are running successfully
+- switching to using /var/lib/json-passwd instead of /root/json-passwd
+
 * Wed Sep  9 2015 Tim Skirvin <tskirvin@fnal.gov>       1.0.0-0.el6
 - initial version

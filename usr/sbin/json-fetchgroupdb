@@ -12,7 +12,7 @@ configFile = '/etc/json-passwd/config'
 #########################################################################
 
 import datetime, filecmp, json, optparse, os.path, re, requests, shlex, \
-    shutil, subprocess, sys, tempfile, time, yaml
+    shutil, subprocess, sys, syslog, tempfile, time, yaml
 from distutils.version import StrictVersion
 
 requiredElements = ['gid','users']
@@ -47,8 +47,14 @@ def loggit(severity, message):
         print ('[%s] %s %s: %s') % (mypid,ts,severity,message)
     if severity == 'NOTICE':
         sys.stderr.write('%s: %s\n' % (severity,message))
+    if severity == 'SUCCESS':
+        sys.stderr.write('%s: %s\n' % (severity,message))
+        syslog.syslog(syslog.LOG_INFO, "%s - %s: %s" \
+            % (os.path.basename(__file__), severity, message))
     if severity == 'ERROR':
         sys.stderr.write('%s: %s\n' % (severity,message))
+        syslog.syslog(syslog.LOG_INFO, "%s - %s: %s" \
+            % (os.path.basename(__file__), severity, message))
         sys.exit(1)
 
 def parseConfig(file):
@@ -358,6 +364,8 @@ def main():
                 for i in success: print i
             else:
                 populateGroupsFile(data, success)
+                loggit('SUCCESS', "%s - good [%s], failed [%s]" \
+                    % (opt.db, numSuccess, numFailures))
 
         else:
             loggit('ERROR', \
