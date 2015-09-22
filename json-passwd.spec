@@ -1,7 +1,7 @@
 Name:           json-passwd
 Group:          System Environment/Libraries
-Version:        1.0.1
-Release:        0%{?dist}
+Version:        1.0.2
+Release:        1%{?dist}
 Summary:        Manage passwd and group database files from json URLs
 
 License:        BSD
@@ -10,7 +10,7 @@ BuildArch:      noarch
 URL:            http://github.com/tskirvin/json-passwd
 
 BuildRequires:  rsync
-Requires:       python
+Requires:       python PyYAML
 
 Source:         json-passwd-%{version}-%{release}.tar.gz
 
@@ -61,6 +61,12 @@ mkdir -p /var/lib/json-passwd
 /usr/share/man/man8/*
 
 %changelog
+* Thu Sep 17 2015 Tim Skirvin <tskirvin@fnal.gov>       1.0.2-1.el6
+- added requirement for PyYAML
+
+* Thu Sep 17 2015 Tim Skirvin <tskirvin@fnal.gov>       1.0.2-0.el6
+- renamed checks to 'ssi_*' to meet local naming conventions
+
 * Thu Sep 17 2015 Tim Skirvin <tskirvin@fnal.gov>       1.0.1-0.el6
 - json-fetchgroupdb - logs to syslog, logs successes overtly
 - json-fetchpasswddb - logs to syslog, logs successes overtly
