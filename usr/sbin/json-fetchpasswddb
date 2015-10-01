@@ -89,10 +89,20 @@ def parseUsers(data):
     loggit ('INFO', 'Processing users list')
     shortlist = []
     newDict = {}
+    skip = {}
 
     users      = data['users']
     success     = []
     numFailures = 0
+
+    if 'passwdIgnore' in config:
+        for i in config['passwdIgnore']:
+            skip[i] = 1     
+
+    if 'passwdUidMinimum' in config:
+        minUid = config['passwdUidMinimum']
+    else:
+        minUid = 500
 
     for username in users:
         shortDict = users[username]
@@ -109,33 +119,40 @@ def parseUsers(data):
         else:
             uid = shortDict['uid']
 
-            if re.search('^[a-z0-9_]+$',username) \
-              and re.search('^[0-9]+$',shortDict['uid']) \
-              and re.search('^[0-9]+$',shortDict['gid']) \
-              and isinstance(shortDict['comment'], basestring) \
-              and isinstance(shortDict['homedir'], basestring) \
-              and isinstance(shortDict['shell'], basestring):
-                shortlist.append (uid)
-                newUser= {
-                    'name':    username,
-                    'uid':     uid,
-                    'gid':     shortDict['gid'],
-                    'comment': shortDict['comment'],
-                    'homedir': shortDict['homedir'],
-                    'shell':   shortDict['shell']
-                }
-                userEntry = '%s:x:%s:%s:%s:%s:%s' % \
-                    (username, uid, shortDict['gid'], shortDict['comment'],
-                    shortDict['homedir'], shortDict['shell'])
+        if username in skip:
+            loggit ('NOTICE', '%s - skipping user (passwdIgnore)' % username)
+            numFailures+=1
 
-                if uid not in newDict:
-                    newDict[uid] = []
+        elif int(uid) < int(minUid):
+            loggit ('NOTICE', '%s - uid %d is <%d (passwdUidMinimum)' \
+                % (username, int(uid), int(minUid)))
+            numFailures+=1
 
-                newDict[uid].append(userEntry)
-            else:
-                loggit ('NOTICE','%s - could not parse (%s)' \
-                    % (username, shortDict))
-                numFailures+=1
+        elif re.search('^[a-z0-9_]+$',username) \
+          and re.search('^[0-9]+$',shortDict['uid']) \
+          and re.search('^[0-9]+$',shortDict['gid']) \
+          and isinstance(shortDict['comment'], basestring) \
+          and isinstance(shortDict['homedir'], basestring) \
+          and isinstance(shortDict['shell'], basestring):
+            shortlist.append (uid)
+            newUser= {
+                'name':    username,
+                'uid':     uid,
+                'gid':     shortDict['gid'],
+                'comment': shortDict['comment'],
+                'homedir': shortDict['homedir'],
+                'shell':   shortDict['shell']
+            }
+            userEntry = '%s:x:%s:%s:%s:%s:%s' % \
+                (username, uid, shortDict['gid'], shortDict['comment'],
+                shortDict['homedir'], shortDict['shell'])
+            if uid not in newDict:
+                newDict[uid] = []
+            newDict[uid].append(userEntry)
+        else:
+            loggit ('NOTICE','%s - could not parse (%s)' \
+                % (username, shortDict))
+            numFailures+=1
 
     shortlist = list(set(shortlist))
     shortlist.sort(key=int)

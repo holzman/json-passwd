@@ -1,7 +1,7 @@
 Name:           json-passwd
 Group:          System Environment/Libraries
-Version:        1.0.2
-Release:        1%{?dist}
+Version:        1.1.0
+Release:        0%{?dist}
 Summary:        Manage passwd and group database files from json URLs
 
 License:        BSD
@@ -61,6 +61,12 @@ mkdir -p /var/lib/json-passwd
 /usr/share/man/man8/*
 
 %changelog
+* Thu Sep 17 2015 Tim Skirvin <tskirvin@fnal.gov>       1.1.0-0.el6
+- added 'passwdIgnore' and 'passwdUidMinimum' fields to config file
+- json-fetchpasswddb - uses passwdIgnore to skip entries, and
+  passwdUidMinimum to skip creating accounts with uids below a certain
+  number
+
 * Thu Sep 17 2015 Tim Skirvin <tskirvin@fnal.gov>       1.0.2-1.el6
 - added requirement for PyYAML
 
