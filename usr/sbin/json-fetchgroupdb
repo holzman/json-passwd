@@ -17,6 +17,8 @@ from distutils.version import StrictVersion
 
 requiredElements = ['gid','users']
 
+tmpDir = tempfile.mkdtemp()
+
 #########################################################################
 ### Subroutines #########################################################
 #########################################################################
@@ -55,6 +57,7 @@ def loggit(severity, message):
         sys.stderr.write('%s: %s\n' % (severity,message))
         syslog.syslog(syslog.LOG_INFO, "%s - %s: %s" \
             % (os.path.basename(__file__), severity, message))
+        shutil.rmtree(tmpDir)
         sys.exit(1)
 
 def parseConfig(file):
@@ -150,7 +153,6 @@ def populateGroupsFile(data, success):
     ts = datetime.datetime.fromtimestamp(
         data['generationTime']).strftime('%Y%m%d_%H-%M-%S')
 
-    tmpDir  = tempfile.gettempdir()
 
     tmpFile = '%s/sanitized-group-%s.txt' % (tmpDir, ts)
     tmpDb   = '%s/sanitized-group-%s.db'  % (tmpDir, ts)
@@ -372,6 +374,7 @@ def main():
                 "group count (%s) does not match 'numberOfGroups' (%s)" \
                 % (totalDetectedGroups,data['numberOfGroups']))
 
+        shutil.rmtree(tmpDir)
         sys.exit(0)
 
     except Exception,e:

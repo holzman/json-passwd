@@ -1,6 +1,6 @@
 Name:           json-passwd
 Group:          System Environment/Libraries
-Version:        1.1.0
+Version:        1.1.1
 Release:        0%{?dist}
 Summary:        Manage passwd and group database files from json URLs
 
@@ -61,6 +61,10 @@ mkdir -p /var/lib/json-passwd
 /usr/share/man/man8/*
 
 %changelog
+* Thu Sep 17 2015 Tim Skirvin <tskirvin@fnal.gov>       1.1.1-0.el6
+- Both fetch scripts now use a more-secure "temp" directory and clean up
+  after themselves.
+
 * Thu Sep 17 2015 Tim Skirvin <tskirvin@fnal.gov>       1.1.0-0.el6
 - added 'passwdIgnore' and 'passwdUidMinimum' fields to config file
 - json-fetchpasswddb - uses passwdIgnore to skip entries, and

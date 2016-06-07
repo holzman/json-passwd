@@ -17,6 +17,8 @@ from distutils.version import StrictVersion
 
 requiredElements = [ 'uid', 'gid', 'comment', 'homedir', 'shell' ]
 
+tmpDir = tempfile.mkdtemp()
+
 #########################################################################
 ### Subroutines #########################################################
 #########################################################################
@@ -55,6 +57,7 @@ def loggit(severity, message):
         sys.stderr.write('%s: %s\n' % (severity,message))
         syslog.syslog(syslog.LOG_INFO, "%s - %s: %s" \
             % (os.path.basename(__file__), severity, message))
+        shutil.rmtree(tmpDir)
         sys.exit(1)
 
 def parseConfig(file):
@@ -395,6 +398,7 @@ def main():
                 "passwd count (%s) does not match 'numberOfUsers' (%s)" \
                 % (totalDetectedUsers,data['numberOfUsers']))
 
+        shutil.rmtree(tmpDir)
         sys.exit(0)
 
     except Exception,e:
