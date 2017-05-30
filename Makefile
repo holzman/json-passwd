@@ -1,1 +1,1 @@
-../cms-rpmtools/Makefile
+../ecf-rpmtools/Makefile

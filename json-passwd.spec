@@ -61,7 +61,7 @@ mkdir -p /var/lib/json-passwd
 /usr/share/man/man8/*
 
 %changelog
-* Thu Sep 17 2015 Tim Skirvin <tskirvin@fnal.gov>       1.1.1-0.el6
+* Thu Sep 17 2015 Tim Skirvin <tskirvin@fnal.gov>       1.1.1-0
 - Both fetch scripts now use a more-secure "temp" directory and clean up
   after themselves.
 
