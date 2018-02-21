@@ -281,7 +281,7 @@ def validateMakeDb(file, entries):
     if p.wait() != 0:
         loggit('ERROR', '%s: could not verify by makedb' % (file))
     for line in stdout.splitlines():
-        if re.search('^\=?[0-9]+ .*',line):
+        if re.search('^\=[0-9]+ .*',line):
             linecount+=1
 
     if linecount != len(entries):
