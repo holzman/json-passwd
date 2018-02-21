@@ -281,7 +281,7 @@ def validateMakeDb(file, entries):
     if p.wait() != 0:
         loggit('ERROR', '%s: could not verify by makedb' % (file))
     for line in stdout.splitlines():
-        if re.search('^[0-9]+ .*',line):
+        if re.search('^\=?[0-9]+ .*',line):
             linecount+=1
 
     if linecount != len(entries):
@@ -487,7 +487,7 @@ Tyler Parsons <tparsons@fnal.gov>
 
 =head1 COPYRIGHT
 
-Copyright 2015, Fermi National Accelerator Laboratory
+Copyright 2015-2018, Fermi National Accelerator Laboratory
 
 This program is free software; you may redistribute it and/or modify
 it under the same terms as Perl itself.

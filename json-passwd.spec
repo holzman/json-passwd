@@ -1,6 +1,6 @@
 Name:           json-passwd
 Group:          System Environment/Libraries
-Version:        1.1.1
+Version:        1.2.0
 Release:        0%{?dist}
 Summary:        Manage passwd and group database files from json URLs
 
@@ -33,6 +33,15 @@ for i in etc usr; do
     rsync -Crlpt --delete ./${i} ${RPM_BUILD_ROOT}
 done
 
+%if 0%{?rhel} == 6
+cp per-build/Makefile.el6 ${RPM_BUILD_ROOT}/etc/json-passwd/Makefile
+%endif
+
+
+%if 0%{?rhel} == 7
+cp per-build/Makefile.el7 ${RPM_BUILD_ROOT}/etc/json-passwd/Makefile
+%endif
+
 for i in bin sbin; do
     if [ -d ${RPM_BUILD_ROOT}/$i ]; then
         chmod 0755 ${RPM_BUILD_ROOT}
@@ -61,6 +70,11 @@ mkdir -p /var/lib/json-passwd
 /usr/share/man/man8/*
 
 %changelog
+* Wed Feb 21 2018 Tim Skirvin <tskirvin@fnal.gov>       1.2.0-0
+- json-fetchgroupdb - now supports different formats for EL6 + EL7
+  Makefile output
+- added Makefiles for el6 + el7, hooking up via symlink
+
 * Thu Sep 17 2015 Tim Skirvin <tskirvin@fnal.gov>       1.1.1-0
 - Both fetch scripts now use a more-secure "temp" directory and clean up
   after themselves.
