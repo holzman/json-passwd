@@ -1,5 +1,9 @@
 {
     "groupFile": "/var/db/group.db",
+    "groupIgnore": [
+        "condor",
+        "cvmfs"
+    ],
     "groupUrl": "http://cms-vulcan-git.fnal.gov/group/w_cms",
     "logFile": "/var/log/json-passwd.log",
     "makeFile": "/etc/json-passwd/Makefile",
