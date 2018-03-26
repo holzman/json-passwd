@@ -93,10 +93,15 @@ def parseGroups(data):
     loggit ('INFO', 'Processing groups list')
     shortlist = []
     newDict = {}
+    skip = {}
 
     groups      = data['groups']
     success     = []
     numFailures = 0
+
+    if 'groupIgnore' in config:
+        for i in config['groupIgnore']:
+           skip[i] = 1
 
     for groupname in groups:
         shortDict = groups[groupname]
@@ -113,7 +118,11 @@ def parseGroups(data):
         else:
             gid = shortDict['gid']
 
-            if re.search('^[a-z0-9_-]+$',groupname) \
+            if groupname in skip:
+                loggit ('NOTICE', '%s - skipping group (groupIgnore)' % groupname)
+                numFailures+=1
+
+            elif re.search('^[a-z0-9_-]+$',groupname) \
               and re.search('^[0-9]+$',shortDict['gid']) \
               and isinstance(shortDict['users'], basestring):
                 shortlist.append (gid)
