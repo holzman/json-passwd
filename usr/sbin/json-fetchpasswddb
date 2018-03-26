@@ -176,8 +176,6 @@ def populateUsersFile(data, success):
     ts = datetime.datetime.fromtimestamp(
         data['generationTime']).strftime('%Y%m%d_%H-%M-%S')
 
-    tmpDir  = tempfile.gettempdir()
-
     tmpFile = '%s/sanitized-user-%s.txt' % (tmpDir, ts)
     tmpDb   = '%s/sanitized-user-%s.db'  % (tmpDir, ts)
     tmpDb2  = '%s/temp_passwd.db' % (opt.workDir)
