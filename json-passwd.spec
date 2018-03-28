@@ -1,6 +1,6 @@
 Name:           json-passwd
 Group:          System Environment/Libraries
-Version:        1.2.0
+Version:        1.2.1
 Release:        1%{?dist}
 Summary:        Manage passwd and group database files from json URLs
 
@@ -70,6 +70,10 @@ mkdir -p /var/lib/json-passwd
 /usr/share/man/man8/*
 
 %changelog
+* Mon Mar 26 2018 Tim Skirvin <tskirvin@fnal.gov>       1.2.1-1
+- json-fetchgroupdb - added groupIgnore
+- json-fetcpasswddb - bug fix, cleans up temp files now
+
 * Wed Feb 21 2018 Tim Skirvin <tskirvin@fnal.gov>       1.2.0-1
 - json-fetchgroupdb - really works on both EL6 + EL7
 
