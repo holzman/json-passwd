@@ -1,0 +1,22 @@
+{
+    "groupFile": "/var/db/group.db",
+    "groupIgnore": [
+        "condor",
+        "cvmfs"
+    ],
+    "groupUrl": "http://cms-vulcan-git.fnal.gov/group/w_cms",
+    "logFile": "/tmp/json-passwd.log",
+    "makeFile": "/etc/json-passwd/Makefile",
+    "passwdFile": "/var/db/passwd.db",
+    "passwdIgnore": [
+        "condor",
+        "cvmfs"
+    ],
+    "proxies": {
+        "http": "http://1.2.3.4:3128",
+        "https": "http://1.2.3.4:1080"
+    },
+    "passwdUrl": "http://cms-vulcan-git.fnal.gov/password/w_cms",
+    "passwdUidMinimum": 500,
+    "workDir": "/var/lib/json-passwd"
+}

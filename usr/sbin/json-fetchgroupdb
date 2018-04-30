@@ -5,7 +5,12 @@
 ### Configuration #######################################################
 #########################################################################
 
-configFile = '/etc/json-passwd/config'
+import os
+
+if 'JPCONF' in os.environ:
+    configFile = os.environ['JPCONF']
+else:
+    configFile = '/etc/json-passwd/config'
 
 #########################################################################
 ### Declarations ########################################################
@@ -217,6 +222,15 @@ def populateGroupsFile(data, success):
 
     loggit ('INFO', '%s: database is complete' % (final))
 
+def proxyOrEmpty():
+    """
+    Support proxies; assumes that the entry in the config file is
+    accurate.
+    """
+
+    if 'proxies' in config: return config['proxies']
+    else: return {}
+
 def recoverBackup(final, finalBak):
     """
     Recover the output data file from backup.
@@ -234,7 +248,8 @@ def retrieveJson(url):
     data object.
     """
     try:
-        requestURL = requests.get(url, verify=False, timeout=4.00)
+        requestURL = requests.get(url, verify=False, timeout=4.00,
+            proxies=proxyOrEmpty())
         if StrictVersion(requests.__version__) > StrictVersion('1.0.0'):
             data=requestURL.json()
         else:

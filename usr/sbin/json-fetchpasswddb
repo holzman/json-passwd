@@ -5,7 +5,12 @@
 ### Configuration #######################################################
 #########################################################################
 
-configFile = '/etc/json-passwd/config'
+import os
+
+if 'JPCONF' in os.environ:
+    configFile = os.environ['JPCONF']
+else:
+    configFile = '/etc/json-passwd/config'
 
 #########################################################################
 ### Declarations ########################################################
@@ -230,6 +235,13 @@ def populateUsersFile(data, success):
 
     loggit ('INFO', '%s: database is complete' % (final))
 
+def proxyOrEmpty():
+    """
+    """
+
+    if 'proxies' in config: return config['proxies']
+    else: return {}
+
 def recoverBackup(final, finalBak):
     """
     Recover the output data file from backup.
@@ -247,7 +259,8 @@ def retrieveJson(url):
     data object.
     """
     try:
-        requestURL = requests.get(url, verify=False, timeout=4.00)
+        requestURL = requests.get(url, verify=False, timeout=4.00,
+            proxies=proxyOrEmpty())
         if StrictVersion(requests.__version__) > StrictVersion('1.0.0'):
             data=requestURL.json()
         else:
@@ -521,7 +534,7 @@ Tyler Parsons <tparsons@fnal.gov>
 
 =head1 COPYRIGHT
 
-Copyright 2015, Fermi National Accelerator Laboratory
+Copyright 2015-2018, Fermi National Accelerator Laboratory
 
 This program is free software; you may redistribute it and/or modify
 it under the same terms as Perl itself.
