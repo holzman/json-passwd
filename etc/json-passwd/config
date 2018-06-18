@@ -14,5 +14,6 @@
     ],
     "passwdUrl": "http://cms-vulcan-git.fnal.gov/password/w_cms",
     "passwdUidMinimum": 500,
+    "proxies": {},
     "workDir": "/var/lib/json-passwd"
 }

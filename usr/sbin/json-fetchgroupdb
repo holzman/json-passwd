@@ -121,27 +121,23 @@ def parseGroups(data):
             numFailures += 1
 
         else:
-            gid = shortDict['gid']
+            gid = str(shortDict['gid'])
+            users = shortDict['users']
+
+            groupEntry = '%s:*:%s:%s' % \
+                (groupname, gid, users)
 
             if groupname in skip:
                 loggit ('NOTICE', '%s - skipping group (groupIgnore)' % groupname)
                 numFailures+=1
 
             elif re.search('^[a-z0-9_-]+$',groupname) \
-              and re.search('^[0-9]+$',shortDict['gid']) \
-              and isinstance(shortDict['users'], basestring):
+              and re.search('^[0-9]+$',gid) \
+              and isinstance(users, basestring):
                 shortlist.append (gid)
-                newGroup = {
-                    'name':  groupname,
-                    'gid':   gid,
-                    'users': shortDict['users'],
-                }
-                groupEntry = '%s:*:%s:%s' % \
-                    (groupname, gid, shortDict['users'])
 
                 if gid not in newDict:
                     newDict[gid] = []
-
                 newDict[gid].append(groupEntry)
             else:
                 loggit ('NOTICE','%s - could not parse (%s)' \
@@ -499,7 +495,8 @@ String containing all user entries.  Can be empty.
 
 =item F</etc/json-passwd/config>
 
-JSON-formatted configuration file.
+JSON-formatted configuration file.  Can be overridden with the environment
+variable I<JPCONF>.
 
 =back
 

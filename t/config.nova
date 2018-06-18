@@ -1,0 +1,12 @@
+{
+    "groupFile": "/tmp/group.db",
+    "groupIgnore": [ ],
+    "groupUrl": "http://ssi-users.fnal.gov/nova/group.json",
+    "logFile": "/tmp/json-passwd.log",
+    "makeFile": "/etc/json-passwd/Makefile",
+    "passwdFile": "/tmp/passwd.db",
+    "passwdIgnore": [ ],
+    "passwdUrl": "http://ssi-users.fnal.gov/nova/passwd.json",
+    "passwdUidMinimum": 500,
+    "workDir": "/var/lib/json-passwd"
+}

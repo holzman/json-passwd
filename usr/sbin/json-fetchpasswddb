@@ -522,7 +522,8 @@ String containing the numeric uid.
 
 =item F</etc/json-passwd/config>
 
-JSON-formatted configuration file.
+JSON-formatted configuration file.  Can be overridden with the environment
+variable I<JPCONF>.
 
 =back
 
