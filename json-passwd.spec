@@ -1,6 +1,6 @@
 Name:           json-passwd
 Group:          System Environment/Libraries
-Version:        1.2.2
+Version:        1.2.3
 Release:        0%{?dist}
 Summary:        Manage passwd and group database files from json URLs
 
@@ -70,6 +70,9 @@ mkdir -p /var/lib/json-passwd
 /usr/share/man/man8/*
 
 %changelog
+* Mon Jun 18 2018 Tim Skirvin <tskirvin@fnal.gov>       1.2.3-0
+- json-fetchgroupdb - takes integers or strings from gid
+
 * Mon Apr 30 2018 Tim Skirvin <tskirvin@fnal.gov>       1.2.2-0
 - adding web proxy support to both scripts
 - the config file is now configurable
