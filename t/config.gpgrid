@@ -1,0 +1,21 @@
+{
+    "groupFile": "/var/db/group.db",
+    "groupIgnore": [
+        "condor",
+        "cvmfs"
+    ],
+    "groupUrl": "http://gums-crit.fnal.gov/users/group.json",
+    "logFile": "/tmp/json-passwd.log",
+    "makeFile": "/etc/json-passwd/Makefile",
+    "passwdFile": "/var/db/passwd.db",
+    "passwdIgnore": [
+        "condor",
+        "cvmfs",
+        "gcounpriv",
+        "puppet",
+        "temproot"
+    ],
+    "passwdUrl": "http://gums-crit.fnal.gov/users/passwd.json",
+    "passwdUidMinimum": 500,
+    "workDir": "/var/lib/json-passwd"
+}
