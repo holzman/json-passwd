@@ -1,7 +1,7 @@
 Name:           json-passwd
 Group:          System Environment/Libraries
 Version:        1.2.4
-Release:        0%{?dist}
+Release:        1%{?dist}
 Summary:        Manage passwd and group database files from json URLs
 
 License:        BSD
@@ -70,6 +70,9 @@ mkdir -p /var/lib/json-passwd
 /usr/share/man/man8/*
 
 %changelog
+* Wed Jun 20 2018 Tim Skirvin <tskirvin@fnal.gov>       1.2.4-1
+- regex change for json-fetchpasswddb - allow leading numerals in usernames
+
 * Tue Jun 19 2018 Tim Skirvin <tskirvin@fnal.gov>       1.2.4-0
 - json-fetchpasswddb - the user-matching regex is more "correct" so that 
   (e.g.) dashes are allowed in usernames

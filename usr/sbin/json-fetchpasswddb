@@ -136,7 +136,7 @@ def parseUsers(data):
                 % (username, int(uid), int(minUid)))
             numFailures+=1
 
-        elif re.search('^[a-z_][a-z0-9_-]*$',username) \
+        elif re.search('^[a-z0-9_][a-z0-9_-]*$',username) \
           and re.search('^[0-9]+$',shortDict['uid']) \
           and re.search('^[0-9]+$',shortDict['gid']) \
           and isinstance(shortDict['comment'], basestring) \
