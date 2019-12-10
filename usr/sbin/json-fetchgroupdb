@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 # Generate /var/db/groups.db from a remote JSON source.
 
 #########################################################################
@@ -16,11 +16,11 @@ else:
 ### Declarations ########################################################
 #########################################################################
 
-import datetime, filecmp, json, optparse, os.path, re, requests, shlex, \
-    shutil, subprocess, sys, syslog, tempfile, time, yaml
+import datetime, json, optparse, os.path, re, requests, shlex, \
+    shutil, subprocess, sys, syslog, tempfile, time
 from distutils.version import StrictVersion
 
-requiredElements = ['gid','users']
+requiredElements = ['gid', 'users']
 
 tmpDir = tempfile.mkdtemp()
 
@@ -44,23 +44,23 @@ def loggit(severity, message):
     Write out error messages to our chosen locations.  If we get a
     severity of 'ERROR', then also exit with status code 1.
     """
-    mypid=os.getpid()
-    ts = datetime.datetime.fromtimestamp( \
+    mypid = os.getpid()
+    ts = datetime.datetime.fromtimestamp(
         time.time()).strftime('%Y-%m-%d_%H:%M:%S')
     loglocation = opt.logFile
     with open(loglocation, 'a+') as text_file:
-        text_file.write(('[%s] %s %s: %s\n') % (mypid,ts,severity,message))
+        text_file.write(('[%s] %s %s: %s\n') % (mypid, ts, severity, message))
     if opt.debug:
-        print ('[%s] %s %s: %s') % (mypid,ts,severity,message)
+        print ('[%s] %s %s: %s') % (mypid, ts, severity, message)
     if severity == 'NOTICE':
-        sys.stderr.write('%s: %s\n' % (severity,message))
+        sys.stderr.write('%s: %s\n' % (severity, message))
     if severity == 'SUCCESS':
-        sys.stderr.write('%s: %s\n' % (severity,message))
-        syslog.syslog(syslog.LOG_INFO, "%s - %s: %s" \
+        sys.stderr.write('%s: %s\n' % (severity, message))
+        syslog.syslog(syslog.LOG_INFO, "%s - %s: %s"
             % (os.path.basename(__file__), severity, message))
     if severity == 'ERROR':
-        sys.stderr.write('%s: %s\n' % (severity,message))
-        syslog.syslog(syslog.LOG_INFO, "%s - %s: %s" \
+        sys.stderr.write('%s: %s\n' % (severity, message))
+        syslog.syslog(syslog.LOG_INFO, "%s - %s: %s"
             % (os.path.basename(__file__), severity, message))
         shutil.rmtree(tmpDir)
         sys.exit(1)
@@ -76,10 +76,10 @@ def parseConfig(file):
         config = json.load(open(file, 'r'))
     except IOError, e:
         print "file error:  %s" % e
-        sys.exit (2)
+        sys.exit(2)
     except Exception, e:
         print "unknown error:  %s" % e
-        sys.exit (2)
+        sys.exit(2)
 
     return config
 
@@ -95,18 +95,18 @@ def parseGroups(data):
     Returns two items: an array of matching entries, and a count of
     entries that couldn't be parsed.
     """
-    loggit ('INFO', 'Processing groups list')
+    loggit('INFO', 'Processing groups list')
     shortlist = []
     newDict = {}
     skip = {}
 
-    groups      = data['groups']
-    success     = []
+    groups = data['groups']
+    success = []
     numFailures = 0
 
     if 'groupIgnore' in config:
         for i in config['groupIgnore']:
-           skip[i] = 1
+            skip[i] = 1
 
     for groupname in groups:
         shortDict = groups[groupname]
@@ -116,7 +116,7 @@ def parseGroups(data):
                 keyFailures.append(requiredElement)
 
         if len(keyFailures) > 0:
-            loggit('NOTICE', '%s: missing key(s): %s' % (groupname, \
+            loggit('NOTICE', '%s: missing key(s): %s' % (groupname,
                 ','.join(keyFailures)))
             numFailures += 1
 
@@ -128,21 +128,21 @@ def parseGroups(data):
                 (groupname, gid, users)
 
             if groupname in skip:
-                loggit ('NOTICE', '%s - skipping group (groupIgnore)' % groupname)
-                numFailures+=1
+                loggit('NOTICE', '%s - skipping group (groupIgnore)' % groupname)
+                numFailures += 1
 
-            elif re.search('^[a-z0-9_-]+$',groupname) \
-              and re.search('^[0-9]+$',gid) \
-              and isinstance(users, basestring):
-                shortlist.append (gid)
+            elif (re.search('^[a-z0-9_-]+$', groupname)
+              and re.search('^[0-9]+$', gid)
+              and isinstance(users, basestring)):
+                shortlist.append(gid)
 
                 if gid not in newDict:
                     newDict[gid] = []
                 newDict[gid].append(groupEntry)
             else:
-                loggit ('NOTICE','%s - could not parse (%s)' \
+                loggit('NOTICE', '%s - could not parse (%s)'
                     % (groupname, shortDict))
-                numFailures+=1
+                numFailures += 1
 
     shortlist = list(set(shortlist))
     shortlist.sort(key=int)
@@ -163,60 +163,59 @@ def populateGroupsFile(data, success):
     ts = datetime.datetime.fromtimestamp(
         data['generationTime']).strftime('%Y%m%d_%H-%M-%S')
 
-
     tmpFile = '%s/sanitized-group-%s.txt' % (tmpDir, ts)
-    tmpDb   = '%s/sanitized-group-%s.db'  % (tmpDir, ts)
-    tmpDb2  = '%s/temp_group.db' % (opt.workDir)
-    make    = config['makeFile']
+    tmpDb = '%s/sanitized-group-%s.db' % (tmpDir, ts)
+    tmpDb2 = '%s/temp_group.db' % (opt.workDir)
+    make = config['makeFile']
 
-    final    = opt.db
+    final = opt.db
     finalBak = final + '.bak'
 
-    loggit ('INFO', '%s: creating file and populating' % tmpFile)
+    loggit('INFO', '%s: creating file and populating' % tmpFile)
     with open(tmpFile, 'w') as text_file:
         for item in success:
             text_file.write('%s\n' % item)
 
-    loggit ('INFO', '%s: validating' % tmpFile)
+    loggit('INFO', '%s: validating' % tmpFile)
     if os.path.isfile(tmpFile):
         num_lines = sum(1 for line in open(tmpFile))
         if num_lines == len(success):
-            loggit ('INFO', '%s: correct number of users (%s)' \
+            loggit('INFO', '%s: correct number of users (%s)'
                 % (tmpFile, len(success)))
         else:
-            loggit ('ERROR', '%s: contains %s entries, should be %s' \
+            loggit('ERROR', '%s: contains %s entries, should be %s'
                 % (tmpFile, num_lines, len(success)))
     else:
-        loggit ('ERROR', '%s: file not found' % (tmpFile))
+        loggit('ERROR', '%s: file not found' % (tmpFile))
 
     cmd = '/usr/bin/make -f %s %s/group.db VAR_DB=%s SOURCE=%s OUTPUT=%s' \
         % (make, opt.workDir, opt.workDir, tmpFile, tmpDb)
-    loggit ('INFO', '%s: generating compiled DB file: %s' % (tmpDb, cmd))
-    error = cmd_external_stderr_to_return (cmd)
+    loggit('INFO', '%s: generating compiled DB file: %s' % (tmpDb, cmd))
+    error = cmd_external_stderr_to_return(cmd)
     if error != '':
         loggit('ERROR', 'command failed:\n# %s\n%s' % (cmd, error))
 
     if validateMakeDb(tmpDb, success):
         pass
     else:
-        loggit ('ERROR', 'unknown error when validating with makedb')
+        loggit('ERROR', 'unknown error when validating with makedb')
 
-    loggit ('INFO', '%s: moving to %s' % (tmpDb, tmpDb2))
+    loggit('INFO', '%s: moving to %s' % (tmpDb, tmpDb2))
     shutil.move(tmpDb, tmpDb2)
 
     if os.path.isfile(final):
-        loggit ('INFO', 'cp %s %s' % (final,finalBak))
-        shutil.copy2 (final,finalBak)
+        loggit('INFO', 'cp %s %s' % (final, finalBak))
+        shutil.copy2(final, finalBak)
 
-    loggit ('INFO', 'cp %s %s' % (tmpDb2, final))
-    shutil.copy2 (tmpDb2, final)
+    loggit('INFO', 'cp %s %s' % (tmpDb2, final))
+    shutil.copy2(tmpDb2, final)
 
     if validateGetEnt(success):
         pass
     else:
         recoverBackup(final, finalBak)
 
-    loggit ('INFO', '%s: database is complete' % (final))
+    loggit('INFO', '%s: database is complete' % (final))
 
 def proxyOrEmpty():
     """
@@ -232,11 +231,10 @@ def recoverBackup(final, finalBak):
     Recover the output data file from backup.
     """
     if os.path.isfile(finalBak):
-        loggit ('NOTICE', '%s: restoring from %s' % (final, finalBak))
+        loggit('NOTICE', '%s: restoring from %s' % (final, finalBak))
         shutil.copy2(finalBak, final)
     else:
-        loggit ('NOTICE', '%s: %s does not exist' % (final, finalBak))
-    loggit ('ERROR', '%s: Immediate Action required! Review logs' % (logfile))
+        loggit('NOTICE', '%s: %s does not exist' % (final, finalBak))
 
 def retrieveJson(url):
     """
@@ -247,11 +245,11 @@ def retrieveJson(url):
         requestURL = requests.get(url, verify=False, timeout=4.00,
             proxies=proxyOrEmpty())
         if StrictVersion(requests.__version__) > StrictVersion('1.0.0'):
-            data=requestURL.json()
+            data = requestURL.json()
         else:
-            data=requestURL.json
+            data = requestURL.json
     except:
-        loggit('ERROR', 'failure while retrieving json data from URL (%s)' \
+        loggit('ERROR', 'failure while retrieving json data from URL (%s)'
             % (url))
 
     loggit('INFO', 'retrieved URL (%s)' % (url))
@@ -265,24 +263,24 @@ def validateGetEnt(entries):
     """
 
     if opt.db != '/var/db/group.db':
-        loggit ('INFO', 'getent will not work unless we are looking at /var/db/group.db')
+        loggit('INFO', 'getent will not work unless we are looking at /var/db/group.db')
         return True
 
-    loggit ('INFO', 'group.db: validate using getent')
+    loggit('INFO', 'group.db: validate using getent')
     cmd = '/usr/bin/getent -s db group'
     p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
     (stdout, stderr) = p.communicate()
     if p.wait() != 0:
-        loggit ('NOTICE', 'group.db: error when trying to use getent')
+        loggit('NOTICE', 'group.db: error when trying to use getent')
         return False
 
     if len(stdout.splitlines()) == len(entries):
-        loggit ('INFO','group.db: contains %s entries (appears correct)' \
+        loggit('INFO', 'group.db: contains %s entries (appears correct)'
             % (len(entries)))
         return True
     else:
-        loggit ('NOTICE', 'group.db: contains %s entries (should be %s)' \
+        loggit('NOTICE', 'group.db: contains %s entries (should be %s)'
             % (len(stdout.splitlines()), len(entries)))
         return False
 
@@ -292,8 +290,8 @@ def validateMakeDb(file, entries):
     """
     Confirm that the group data looks good, according to 'makedb -u'.
     """
-    loggit ('INFO', '%s: verifying contents' % (file))
-    linecount=0
+    loggit('INFO', '%s: verifying contents' % (file))
+    linecount = 0
     cmd = '/usr/bin/makedb -u %s' % (file)
     p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
@@ -301,14 +299,14 @@ def validateMakeDb(file, entries):
     if p.wait() != 0:
         loggit('ERROR', '%s: could not verify by makedb' % (file))
     for line in stdout.splitlines():
-        if re.search('^\=[0-9]+ .*',line):
-            linecount+=1
+        if re.search('^\=[0-9]+ .*', line):
+            linecount += 1
 
     if linecount != len(entries):
-        loggit ('ERROR', '%s: contains %s entries, should be %s' \
+        loggit('ERROR', '%s: contains %s entries, should be %s'
             % (file, linecount, len(entries)))
     else:
-        loggit ('INFO', '%s: contains %s entries (appears correct)' \
+        loggit('INFO', '%s: contains %s entries (appears correct)'
             % (file, linecount))
 
     return True
@@ -354,17 +352,17 @@ def main():
     p = optparse.OptionParser(usage=usage,
         description="fetch group database data, write to group.db")
     p.add_option('--db', dest='db', action='store',
-        default = config['groupFile'], help = '%default')
+        default=config['groupFile'], help='%default')
     p.add_option('--debug', dest='debug', action='store_true',
         help='set to print debugging information')
     p.add_option('--logFile', dest='logFile', action='store',
-        default = config['logFile'], help = '%default')
-    p.add_option('--test', dest='test', action='store_true', default = False,
-        help = 'if set, print output to STDOUT; default: %default')
+        default=config['logFile'], help='%default')
+    p.add_option('--test', dest='test', action='store_true', default=False,
+        help='if set, print output to STDOUT; default: %default')
     p.add_option('--url', dest='url', action='store',
-        default = config['groupUrl'], help = '%default')
+        default=config['groupUrl'], help='%default')
     p.add_option('--workDir', dest='workDir', action='store',
-        default = config['workDir'], help = '%default')
+        default=config['workDir'], help='%default')
 
     global opt
     opt, args = p.parse_args()
@@ -372,13 +370,13 @@ def main():
     data = retrieveJson(opt.url)
     try:
         error = validateMetadata(data)
-        if error != '': loggit ('ERROR', error)
+        if error != '': loggit('ERROR', error)
 
         (success, numFailures) = parseGroups(data)
         numSuccess = len(success)
 
-        loggit ('INFO', 'Number of good groups [%s]'   % (numSuccess))
-        loggit ('INFO', 'Number of failed groups [%s]' % (numFailures))
+        loggit('INFO', 'Number of good groups [%s]' % (numSuccess))
+        loggit('INFO', 'Number of failed groups [%s]' % (numFailures))
 
         totalDetectedGroups = numSuccess + numFailures
         if totalDetectedGroups == data['numberOfGroups']:
@@ -386,19 +384,19 @@ def main():
                 for i in success: print i
             else:
                 populateGroupsFile(data, success)
-                loggit('SUCCESS', "%s - good [%s], failed [%s]" \
+                loggit('SUCCESS', "%s - good [%s], failed [%s]"
                     % (opt.db, numSuccess, numFailures))
 
         else:
-            loggit('ERROR', \
-                "group count (%s) does not match 'numberOfGroups' (%s)" \
-                % (totalDetectedGroups,data['numberOfGroups']))
+            loggit('ERROR',
+                "group count (%s) does not match 'numberOfGroups' (%s)"
+                % (totalDetectedGroups, data['numberOfGroups']))
 
         shutil.rmtree(tmpDir)
         sys.exit(0)
 
-    except Exception,e:
-        loggit('ERROR','(Python Error) %s' % (str(e)))
+    except Exception, e:
+        loggit('ERROR', '(Python Error) %s' % (str(e)))
 
 if __name__ == "__main__":
     main()
@@ -508,7 +506,7 @@ Tyler Parsons <tparsons@fnal.gov>
 
 =head1 COPYRIGHT
 
-Copyright 2015-2018, Fermi National Accelerator Laboratory
+Copyright 2015-2019, Fermi National Accelerator Laboratory
 
 This program is free software; you may redistribute it and/or modify
 it under the same terms as Perl itself.

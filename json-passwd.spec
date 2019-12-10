@@ -1,7 +1,7 @@
 Name:           json-passwd
 Group:          System Environment/Libraries
-Version:        1.2.4
-Release:        1%{?dist}
+Version:        1.2.5
+Release:        0%{?dist}
 Summary:        Manage passwd and group database files from json URLs
 
 License:        BSD
@@ -9,8 +9,12 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 URL:            http://github.com/tskirvin/json-passwd
 
-BuildRequires:  rsync
-Requires:       python PyYAML python-requests
+BuildRequires:  rsync perl-podlators
+%if 0%{?rhel} == 8
+Requires:       python2 python2-requests
+%else
+Requires:       python python-requests
+%endif
 
 Source:         json-passwd-%{version}-%{release}.tar.gz
 
@@ -37,9 +41,12 @@ done
 cp per-build/Makefile.el6 ${RPM_BUILD_ROOT}/etc/json-passwd/Makefile
 %endif
 
-
 %if 0%{?rhel} == 7
 cp per-build/Makefile.el7 ${RPM_BUILD_ROOT}/etc/json-passwd/Makefile
+%endif
+
+%if 0%{?rhel} == 8
+cp per-build/Makefile.el8 ${RPM_BUILD_ROOT}/etc/json-passwd/Makefile
 %endif
 
 for i in bin sbin; do
@@ -70,6 +77,14 @@ mkdir -p /var/lib/json-passwd
 /usr/share/man/man8/*
 
 %changelog
+* Tue Dec 10 2018 Tim Skirvin <tskirvin@fnal.gov>       1.2.5-0
+- adding CentOS 8 support
+- explicitly python 2 now
+- ran everything through a python linter
+
+* Fri Aug 03 2018 Tim Skirvin <tskirvin@fnal.gov>       1.2.4-2
+- /etc/json-passwd/config - no longer includes valid URLs or data
+
 * Wed Jun 20 2018 Tim Skirvin <tskirvin@fnal.gov>       1.2.4-1
 - regex change for json-fetchpasswddb - allow leading numerals in usernames
 
