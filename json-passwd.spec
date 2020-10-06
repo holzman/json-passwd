@@ -1,6 +1,6 @@
 Name:           json-passwd
 Group:          System Environment/Libraries
-Version:        1.2.5
+Version:        1.3.0
 Release:        0%{?dist}
 Summary:        Manage passwd and group database files from json URLs
 
@@ -77,6 +77,11 @@ mkdir -p /var/lib/json-passwd
 /usr/share/man/man8/*
 
 %changelog
+* Tue Oct 06 2020 Tim Skirvin <tskirvin@fnal.gov>       1.3.0-0
+- json-fetchpasswdfile - creates /etc/sssd/passwd
+- json-fetchgroupfile - creates /etc/sssd/group
+- both of the above are python 3
+
 * Tue Dec 10 2018 Tim Skirvin <tskirvin@fnal.gov>       1.2.5-0
 - adding CentOS 8 support
 - explicitly python 2 now
