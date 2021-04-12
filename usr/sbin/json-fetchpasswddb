@@ -5,7 +5,7 @@
 ### Configuration #######################################################
 #########################################################################
 
-import os
+import filecmp, os
 
 if 'JPCONF' in os.environ:
     configFile = os.environ['JPCONF']
@@ -212,6 +212,10 @@ def populateUsersFile(data, success):
 
     loggit('INFO', '%s: moving to %s' % (tmpDb, tmpDb2))
     shutil.move(tmpDb, tmpDb2)
+
+    if filecmp.cmp(tmpDb2, final):
+        loggit('INFO', '%s and %s are identical, no updating' % (tmpDb2, final))
+        return
 
     if os.path.isfile(final):
         loggit('INFO', 'cp %s %s' % (final, finalBak))
@@ -526,7 +530,7 @@ Tyler Parsons <tparsons@fnal.gov>
 
 =head1 COPYRIGHT
 
-Copyright 2015-2019, Fermi National Accelerator Laboratory
+Copyright 2015-2021, Fermi National Accelerator Laboratory
 
 This program is free software; you may redistribute it and/or modify
 it under the same terms as Perl itself.

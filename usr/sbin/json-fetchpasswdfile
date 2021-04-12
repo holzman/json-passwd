@@ -5,7 +5,7 @@
 ### Configuration #######################################################
 #########################################################################
 
-import os
+import filecmp, os
 
 if 'JPCONF' in os.environ:
     configFile = os.environ['JPCONF']
@@ -193,6 +193,10 @@ def populateUsersFile(data, success):
                 % (tmpFile, num_lines, len(success)))
     else:
         loggit('ERROR', '%s: file not found' % (tmpFile))
+
+    if filecmp.cmp(tmpFile, final):
+        loggit('INFO', '%s and %s are identical, no updating' % (tmpFile, final))
+        return
 
     if os.path.isfile(final):
         loggit('INFO', 'cp %s %s' % (final, finalBak))
@@ -432,11 +436,9 @@ variable I<JPCONF>.
 
 Tim Skirvin <tskirvin@fnal.gov>
 
-Tyler Parsons <tparsons@fnal.gov>
-
 =head1 COPYRIGHT
 
-Copyright 2015-2020, Fermi National Accelerator Laboratory
+Copyright 2015-2021, Fermi National Accelerator Laboratory
 
 This program is free software; you may redistribute it and/or modify
 it under the same terms as Perl itself.

@@ -1,6 +1,6 @@
 Name:           json-passwd
 Group:          System Environment/Libraries
-Version:        1.3.0
+Version:        1.4.0
 Release:        0%{?dist}
 Summary:        Manage passwd and group database files from json URLs
 
@@ -77,6 +77,11 @@ mkdir -p /var/lib/json-passwd
 /usr/share/man/man8/*
 
 %changelog
+* Mon Apr 12 2021 Tim Skirvin <tskirvin@fnal.gov>       1.4.0-0
+- all scripts - do not deploy new files if there are no changes (so we can
+  tell when the last changes happened, and we don't interfere with the system)
+- some code cleanup
+
 * Tue Oct 06 2020 Tim Skirvin <tskirvin@fnal.gov>       1.3.0-0
 - json-fetchpasswdfile - creates /etc/sssd/passwd
 - json-fetchgroupfile - creates /etc/sssd/group
