@@ -194,13 +194,16 @@ def populateUsersFile(data, success):
     else:
         loggit('ERROR', '%s: file not found' % (tmpFile))
 
-    if filecmp.cmp(tmpFile, final):
-        loggit('INFO', '%s and %s are identical, no updating' % (tmpFile, final))
-        return
-
     if os.path.isfile(final):
-        loggit('INFO', 'cp %s %s' % (final, finalBak))
-        shutil.copy2(final, finalBak)
+        if filecmp.cmp(tmpFile, final):
+            loggit('INFO', '%s and %s are identical, no updating' % (tmpFile, final))
+            return
+
+        if os.path.isfile(final):
+            loggit('INFO', 'cp %s %s' % (final, finalBak))
+            shutil.copy2(final, finalBak)
+    else:
+        loggit('INFO', 'no old file at %s, no backup' % (final))
 
     loggit('INFO', 'cp %s %s' % (tmpFile, final))
     shutil.copy2(tmpFile, final)

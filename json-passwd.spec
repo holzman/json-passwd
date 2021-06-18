@@ -1,6 +1,6 @@
 Name:           json-passwd
 Group:          System Environment/Libraries
-Version:        1.4.0
+Version:        1.4.1
 Release:        0%{?dist}
 Summary:        Manage passwd and group database files from json URLs
 
@@ -77,6 +77,10 @@ mkdir -p /var/lib/json-passwd
 /usr/share/man/man8/*
 
 %changelog
+* Fri Jun 18 2021 Tim Skirvin <tskirvin@fnal.gov>       1.4.1-0
+- *-file scripts - create files if they don't exist yet, make sure that
+  you're not creating db files
+
 * Mon Apr 12 2021 Tim Skirvin <tskirvin@fnal.gov>       1.4.0-0
 - all scripts - do not deploy new files if there are no changes (so we can
   tell when the last changes happened, and we don't interfere with the system)

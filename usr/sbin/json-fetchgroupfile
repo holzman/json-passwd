@@ -184,9 +184,12 @@ def populateGroupsFile(data, success):
     else:
         loggit('ERROR', '%s: file not found' % (tmpFile))
 
-    if filecmp.cmp(tmpFile, final):
-        loggit('INFO', '%s and %s are identical, no updating' % (tmpFile, final))
-        return
+    if os.path.isfile(final):
+        if filecmp.cmp(tmpFile, final):
+            loggit('INFO', '%s and %s are identical, no updating' % (tmpFile, final))
+            return
+    else:
+        loggit('INFO', 'no old file at %s, no backup' % (final))
 
     if os.path.isfile(final):
         loggit('INFO', 'cp %s %s' % (final, finalBak))
@@ -266,7 +269,7 @@ def main():
     p = optparse.OptionParser(usage=usage,
         description="fetch group database data, write to raw group file")
     p.add_option('--file', dest='file', action='store',
-        default=config['groupFile'], help='%default')
+        default=config['groupFileRaw'], help='%default')
     p.add_option('--debug', dest='debug', action='store_true',
         help='set to print debugging information')
     p.add_option('--logFile', dest='logFile', action='store',
@@ -299,7 +302,7 @@ def main():
             else:
                 populateGroupsFile(data, success)
                 loggit('SUCCESS', "%s - good [%s], failed [%s]"
-                    % (opt.db, numSuccess, numFailures))
+                    % (opt.file, numSuccess, numFailures))
 
         else:
             loggit('ERROR',
