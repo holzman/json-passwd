@@ -51,7 +51,7 @@ def loggit(severity, message):
     with open(loglocation, 'a+') as text_file:
         text_file.write(('[%s] %s %s: %s\n') % (mypid, ts, severity, message))
     if opt.debug:
-        print(('[%s] %s %s: %s') % (mypid, ts, severity, message))
+        print((('[%s] %s %s: %s') % (mypid, ts, severity, message)))
     if severity == 'NOTICE':
         sys.stderr.write('%s: %s\n' % (severity, message))
     if severity == 'SUCCESS':
@@ -75,10 +75,10 @@ def parseConfig(file):
     try:
         config = json.load(open(file, 'r'))
     except IOError as e:
-        print("file error:  %s" % e)
+        print(("file error:  %s" % e))
         sys.exit(2)
     except Exception as e:
-        print("unknown error:  %s" % e)
+        print(("unknown error:  %s" % e))
         sys.exit(2)
 
     return config

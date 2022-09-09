@@ -1,6 +1,6 @@
 Name:           json-passwd
 Group:          System Environment/Libraries
-Version:        1.4.1
+Version:        1.5.0
 Release:        0%{?dist}
 Summary:        Manage passwd and group database files from json URLs
 
@@ -10,11 +10,7 @@ BuildArch:      noarch
 URL:            http://github.com/tskirvin/json-passwd
 
 BuildRequires:  rsync perl-podlators
-%if 0%{?rhel} == 8
-Requires:       python2 python2-requests
-%else
-Requires:       python python-requests
-%endif
+Requires:       python3 python3-packaging python3-requests
 
 Source:         json-passwd-%{version}-%{release}.tar.gz
 
@@ -36,10 +32,6 @@ fi
 for i in etc usr; do
     rsync -Crlpt --delete ./${i} ${RPM_BUILD_ROOT}
 done
-
-%if 0%{?rhel} == 6
-cp per-build/Makefile.el6 ${RPM_BUILD_ROOT}/etc/json-passwd/Makefile
-%endif
 
 %if 0%{?rhel} == 7
 cp per-build/Makefile.el7 ${RPM_BUILD_ROOT}/etc/json-passwd/Makefile
@@ -77,6 +69,11 @@ mkdir -p /var/lib/json-passwd
 /usr/share/man/man8/*
 
 %changelog
+* Fri Sep 09 2021 Tim Skirvin <tskirvin@fnal.gov>       1.5.0-0
+- converting to python3
+- CHANGELOG.md exists now
+- switching from distutils to packaging for version library
+
 * Fri Jun 18 2021 Tim Skirvin <tskirvin@fnal.gov>       1.4.1-0
 - *-file scripts - create files if they don't exist yet, make sure that
   you're not creating db files

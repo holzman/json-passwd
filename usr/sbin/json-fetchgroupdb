@@ -18,7 +18,7 @@ else:
 
 import datetime, json, optparse, os.path, re, requests, shlex, \
     shutil, subprocess, sys, syslog, tempfile, time
-from distutils.version import StrictVersion
+from packaging.version import Version
 
 requiredElements = ['gid', 'users']
 
@@ -51,7 +51,7 @@ def loggit(severity, message):
     with open(loglocation, 'a+') as text_file:
         text_file.write(('[%s] %s %s: %s\n') % (mypid, ts, severity, message))
     if opt.debug:
-        print ('[%s] %s %s: %s') % (mypid, ts, severity, message)
+        print(('[%s] %s %s: %s') % (mypid, ts, severity, message))
     if severity == 'NOTICE':
         sys.stderr.write('%s: %s\n' % (severity, message))
     if severity == 'SUCCESS':
@@ -74,11 +74,11 @@ def parseConfig(file):
 
     try:
         config = json.load(open(file, 'r'))
-    except IOError, e:
-        print "file error:  %s" % e
+    except IOError as e:
+        print("file error:  %s" % e)
         sys.exit(2)
-    except Exception, e:
-        print "unknown error:  %s" % e
+    except Exception as e:
+        print("unknown error:  %s" % e)
         sys.exit(2)
 
     return config
@@ -133,7 +133,7 @@ def parseGroups(data):
 
             elif (re.search('^[a-z0-9_-]+$', groupname)
               and re.search('^[0-9]+$', gid)
-              and isinstance(users, basestring)):
+              and isinstance(users, str)):
                 shortlist.append(gid)
 
                 if gid not in newDict:
@@ -248,7 +248,7 @@ def retrieveJson(url):
     try:
         requestURL = requests.get(url, verify=False, timeout=4.00,
             proxies=proxyOrEmpty())
-        if StrictVersion(requests.__version__) > StrictVersion('1.0.0'):
+        if Version(requests.__version__) > Version('1.0.0'):
             data = requestURL.json()
         else:
             data = requestURL.json
@@ -385,7 +385,7 @@ def main():
         totalDetectedGroups = numSuccess + numFailures
         if totalDetectedGroups == data['numberOfGroups']:
             if (opt.test):
-                for i in success: print i
+                for i in success: print(i)
             else:
                 populateGroupsFile(data, success)
                 loggit('SUCCESS', "%s - good [%s], failed [%s]"
@@ -399,7 +399,7 @@ def main():
         shutil.rmtree(tmpDir)
         sys.exit(0)
 
-    except Exception, e:
+    except Exception as e:
         loggit('ERROR', '(Python Error) %s' % (str(e)))
 
 if __name__ == "__main__":
