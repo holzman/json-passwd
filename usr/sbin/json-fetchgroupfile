@@ -18,7 +18,7 @@ else:
 
 import datetime, json, optparse, os.path, re, requests, shlex, \
     shutil, subprocess, sys, syslog, tempfile, time
-from distutils.version import StrictVersion
+from packaging.version import Version
 
 requiredElements = ['gid', 'users']
 
@@ -217,7 +217,7 @@ def retrieveJson(url):
     try:
         requestURL = requests.get(url, verify=False, timeout=4.00,
             proxies=proxyOrEmpty())
-        if StrictVersion(requests.__version__) > StrictVersion('1.0.0'):
+        if Version(requests.__version__) > Version('1.0.0'):
             data = requestURL.json()
         else:
             data = requestURL.json
