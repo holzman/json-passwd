@@ -1,6 +1,6 @@
 Name:           json-passwd
 Group:          System Environment/Libraries
-Version:        1.5.0
+Version:        1.5.1
 Release:        0%{?dist}
 Summary:        Manage passwd and group database files from json URLs
 
@@ -32,6 +32,9 @@ fi
 for i in etc usr; do
     rsync -Crlpt --delete ./${i} ${RPM_BUILD_ROOT}
 done
+%if 0%{?rhel} >= 9
+rm -f ${RPM_BUILD_ROOT}/usr/sbin/*db
+%endif
 
 %if 0%{?rhel} == 7
 cp per-build/Makefile.el7 ${RPM_BUILD_ROOT}/etc/json-passwd/Makefile
@@ -63,13 +66,20 @@ mkdir -p /var/lib/json-passwd
 %files
 %defattr(-,root,root)
 %config(noreplace) /etc/json-passwd/config
-/etc/json-passwd/Makefile
 /usr/sbin/*
 /usr/share/check-mk-agent/local/*
 /usr/share/man/man8/*
+%if 0%{?rhel} < 9
+/etc/json-passwd/Makefile
+%endif
 
 %changelog
-* Fri Sep 09 2021 Tim Skirvin <tskirvin@fnal.gov>       1.5.0-0
+* Fri Feb 24 2023 Tim Skirvin <tskirvin@fnal.gov>       1.5.1-0
+- building EL9 versions
+- fixing dates in this changelog
+- removing db-building scripts from EL9 version
+
+* Thu Sep 09 2021 Tim Skirvin <tskirvin@fnal.gov>       1.5.0-0
 - converting to python3
 - CHANGELOG.md exists now
 - switching from distutils to packaging for version library
@@ -88,7 +98,7 @@ mkdir -p /var/lib/json-passwd
 - json-fetchgroupfile - creates /etc/sssd/group
 - both of the above are python 3
 
-* Tue Dec 10 2018 Tim Skirvin <tskirvin@fnal.gov>       1.2.5-0
+* Mon Dec 10 2018 Tim Skirvin <tskirvin@fnal.gov>       1.2.5-0
 - adding CentOS 8 support
 - explicitly python 2 now
 - ran everything through a python linter
