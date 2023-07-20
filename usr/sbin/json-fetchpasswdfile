@@ -16,7 +16,7 @@ else:
 ### Declarations ########################################################
 #########################################################################
 
-import datetime, json, optparse, os.path, re, requests, shlex, \
+import argparse, datetime, json, os.path, re, requests, shlex, \
     shutil, subprocess, sys, syslog, tempfile, time
 from packaging.version import Version
 
@@ -274,23 +274,23 @@ def main():
     parseConfig(configFile)
 
     usage = "%prog [options]"
-    p = optparse.OptionParser(usage=usage,
+    p = argparse.ArgumentParser(usage=usage,
         description="fetch passwd database data, write to raw passwd file")
-    p.add_option('--file', dest='file', action='store',
+    p.add_argument('--file', dest='file', action='store',
         default=config['passwdFileRaw'], help='%default')
-    p.add_option('--debug', dest='debug', action='store_true',
+    p.add_argument('--debug', dest='debug', action='store_true',
         help='set to print debugging information')
-    p.add_option('--logFile', dest='logFile', action='store',
+    p.add_argument('--logFile', dest='logFile', action='store',
         default=config['logFile'], help='%default')
-    p.add_option('--test', dest='test', action='store_true', default=False,
+    p.add_argument('--test', dest='test', action='store_true', default=False,
         help='if set, print output to STDOUT; default: %default')
-    p.add_option('--url', dest='url', action='store',
+    p.add_argument('--url', dest='url', action='store',
         default=config['passwdUrl'], help='%default')
-    p.add_option('--workDir', dest='workDir', action='store',
+    p.add_argument('--workDir', dest='workDir', action='store',
         default=config['workDir'], help='%default')
 
     global opt
-    opt, args = p.parse_args()
+    opt = p.parse_args()
 
     data = retrieveJson(opt.url)
     try:
